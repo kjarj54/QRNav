@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../screens/content_display_screen.dart';
 import '../models/qr_content.dart';
 
-class QRScannerService {  static void processQRCode(BuildContext context, String? code) async {
+class QRScannerService {
+  static Future<void> processQRCode(BuildContext context, String? code) async {
     if (code == null) return;
     
     final qrContent = QRContent.fromRawData(code);

@@ -13,19 +13,20 @@ class QRScanScreen extends StatefulWidget {
 class _QRScanScreenState extends State<QRScanScreen> with WidgetsBindingObserver {
   final MobileScannerController controller = MobileScannerController();
   bool hasScanned = false;
+  bool isProcessing = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
   }
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (hasScanned) {
+      if (hasScanned || isProcessing) {
         setState(() {
           hasScanned = false;
+          isProcessing = false;
         });
       }
     }
@@ -79,18 +80,28 @@ class _QRScanScreenState extends State<QRScanScreen> with WidgetsBindingObserver
         children: [          MobileScanner(
             controller: controller,
             onDetect: (capture) async {
-              if (hasScanned) return;
+              if (hasScanned || isProcessing) return;
 
               final List<Barcode> barcodes = capture.barcodes;
               if (barcodes.isNotEmpty) {
                 final String? code = barcodes.first.rawValue;
-                setState(() => hasScanned = true);
+                
+                setState(() {
+                  hasScanned = true;
+                  isProcessing = true;
+                });
 
-                QRScannerService.processQRCode(context, code);
-                if (mounted) {
-                  setState(() {
-                    hasScanned = false;
-                  });
+                try {
+                  await QRScannerService.processQRCode(context, code);
+                } catch (e) {
+                  debugPrint('Error al procesar QR: $e');
+                } finally {
+                  if (mounted) {
+                    setState(() {
+                      hasScanned = false;
+                      isProcessing = false;
+                    });
+                  }
                 }
               }
             },
