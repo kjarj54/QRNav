@@ -39,17 +39,14 @@ class ContentDisplayScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Display the appropriate content view based on content type
               _buildContentView(context),
               
               const SizedBox(height: 24),
               
-              // Action buttons for this content type
               QRActionButtons(content: content),
               
               const SizedBox(height: 24),
               
-              // Show full raw data section
               const Text(
                 'Contenido completo:',
                 style: TextStyle(

@@ -32,7 +32,7 @@ class QRActionButtons extends StatelessWidget {
       case ContentType.text:
       case ContentType.unknown:
       default:
-        return const SizedBox.shrink(); // No specific actions for general text
+        return const SizedBox.shrink();
     }
   }
 
@@ -94,7 +94,6 @@ class QRActionButtons extends StatelessWidget {
   }
 
   Widget _buildWifiButtons(BuildContext context) {
-    // No specific action button for WiFi info
     return const SizedBox.shrink();
   }
 
@@ -171,7 +170,6 @@ class QRActionButtons extends StatelessWidget {
   }
 
   Widget _buildCalendarButtons(BuildContext context) {
-    // Basic calendar event - no specific actions yet
     return const SizedBox.shrink();
   }
 

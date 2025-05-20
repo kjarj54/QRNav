@@ -3,23 +3,17 @@ import 'package:flutter/material.dart';
 import '../screens/content_display_screen.dart';
 import '../models/qr_content.dart';
 
-class QRScannerService {
-  static void processQRCode(BuildContext context, String? code) async {
+class QRScannerService {  static void processQRCode(BuildContext context, String? code) async {
     if (code == null) return;
     
-    // Parse the QR code content
     final qrContent = QRContent.fromRawData(code);
     
-    // Handle the content based on type
     if (qrContent.type == ContentType.url) {
-      // Show dialog asking if user wants to open in browser or in-app
       final bool openInBrowser = await _showOpenLinkDialog(context);
         if (openInBrowser) {
-        // Launch URL in external browser
         await _launchURL(qrContent.parsedData['url'] as String);
       } else {
-        // Navigate to content display screen
-        Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => ContentDisplayScreen(
@@ -29,8 +23,7 @@ class QRScannerService {
         );
       }
     } else {
-      // Navigate to content display screen for all other content types
-      Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ContentDisplayScreen(

@@ -10,12 +10,30 @@ class QRScanScreen extends StatefulWidget {
   State<QRScanScreen> createState() => _QRScanScreenState();
 }
 
-class _QRScanScreenState extends State<QRScanScreen> {
+class _QRScanScreenState extends State<QRScanScreen> with WidgetsBindingObserver {
   final MobileScannerController controller = MobileScannerController();
   bool hasScanned = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      if (hasScanned) {
+        setState(() {
+          hasScanned = false;
+        });
+      }
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     super.dispose();
   }
@@ -58,10 +76,9 @@ class _QRScanScreenState extends State<QRScanScreen> {
         ],
       ),
       body: Stack(
-        children: [
-          MobileScanner(
+        children: [          MobileScanner(
             controller: controller,
-            onDetect: (capture) {
+            onDetect: (capture) async {
               if (hasScanned) return;
 
               final List<Barcode> barcodes = capture.barcodes;
@@ -70,6 +87,11 @@ class _QRScanScreenState extends State<QRScanScreen> {
                 setState(() => hasScanned = true);
 
                 QRScannerService.processQRCode(context, code);
+                if (mounted) {
+                  setState(() {
+                    hasScanned = false;
+                  });
+                }
               }
             },
           ),
