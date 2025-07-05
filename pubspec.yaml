@@ -1,5 +1,5 @@
 name: qrnav
-description: "A new Flutter project."
+description: "Intelligent QR code scanner with multi-format content parsing and cross-platform support."
 publish_to: 'none'
 version: 0.1.0
 
